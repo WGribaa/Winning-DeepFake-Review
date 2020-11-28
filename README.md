@@ -5,8 +5,9 @@ Line by line review of the DeepFake Kaggle competition winner
 
 You can read the Notebook online, with the Jupyter viewer. Direct link : https://nbviewer.jupyter.org/github/WGribaa/Winning-DeepFake-Review/blob/main/DeepFake%20Prediction%20Review.ipynb
 
-## 0. Table of content
+## Table of content
 
+* [0. Modules and versions](#modules)
 * [1. About the context of this study](#content)
 * [2. About DeepFake competition](#competition)
   * [a. Context](#context)
@@ -26,7 +27,17 @@ You can read the Notebook online, with the Jupyter viewer. Direct link : https:/
 * [5. Other subsidiary considerations](#other)
 * [6. Thanks](#thanks)
 	
+## 0. Modules and versions <a name="modules">
 	
+* facenet-pytorch 2.5.1
+* opencv-python 4.4.0.46
+* numpy 1.18.1
+* pandas 0.25.3
+* Pillow 7.0.0
+* torch 1.7.0
+* timm 0.3.1
+* torchvision 0.8.1
+
 ## 1. About the context of this study <a name="content">
 
 This study is part of my training in Machine Learning.
