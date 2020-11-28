@@ -186,7 +186,7 @@ It was more than a simple study of lines of codes, it was a deep dive inside the
 
 
 ###### Contact me
-Made by: Wael Gribaa
-Date: 28th November 2020
-Mail at: g.wael@outlook.fr
-GitHub: https://github.com/WGribaa
+ * Made by: Wael Gribaa
+ * Date: 28th November 2020
+ * Mail at: g.wael@outlook.fr
+ * GitHub: https://github.com/WGribaa
