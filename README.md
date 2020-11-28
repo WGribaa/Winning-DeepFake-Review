@@ -1,7 +1,9 @@
 # Winning-DeepFake-Review
-Line-by-line review of the prediction parto of the winning submission to the Facebook Kaggle Deep Fake detection competition.
+Line-by-line review of the prediction part of the winning submission to the Facebook Kaggle Deep Fake detection competition.
 
 Line by line review of the DeepFake Kaggle competition winner
+
+You can read the Notebook online, with the Jupyter viewer. Direct link : https://nbviewer.jupyter.org/github/WGribaa/Winning-DeepFake-Review/blob/main/DeepFake%20Prediction%20Review.ipynb
 
 ## 0. Table of content
 
@@ -123,7 +125,7 @@ This technique has only one purpose : to prevent overfitting, especially in full
 
 <p><img src="images/dropout.png"/></p>
 
-Usually, dropout is turned on (to turn off neurons, please remain with me) during backpropagation then turned off during the forward and prediction phases.
+Usually, dropout is turned on (to turn off neurons, please remain with me) during backpropagation then turned off during the forward and prediction phases. In pytorch, the turning on is made by the call to train(), and eval() turns it off. Basically, we turn Dropout off because we want the full potential of our model during predictions.
 
 This technique will be applied to the EfficientNet in this case study.
 
