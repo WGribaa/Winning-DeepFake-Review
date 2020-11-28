@@ -11,7 +11,7 @@ Line by line review of the DeepFake Kaggle competition winner
   * [b. Links](#links)
   * [c. Scoring](#scoring)
 * [3. Used network types](#network)
-  * [a. EfficinetNet](#efficient)
+  * [a. EfficientNet](#efficient)
   * [b. Multi Task Cascaded CNN (Facenet](#facenet)
     * [1. P-Net](#pnet)
     * [2. R-Net](#rnet)
