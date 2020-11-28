@@ -176,18 +176,18 @@ We first calculate the scale to apply to our main image so that it fits inside a
 
 ### d. MultiThreading through ThreadPoolExecutor <a name="multithread">
 	
-We don't want a single thread of process to occur, while our modern computer are designed to managed multiple ones. The more threads we have, the more tasks the cpu can perform at the same time (if we don't take into account considerations about the intern bus), thus a list of tasks can be completed faster if our program is designed to do so.
+We don't want a single thread of processes to occur, while our modern computers are designed to managed multiple ones. The more threads we have, the more tasks the cpu can perform at the same time (this claim doesn't take into account the intern bus), thus a list of tasks can be completed faster if our program is designed to take advantage of multithreading.
 
 <p><img src="images/thread.png"/></p>
 
-But managing tasks through multiple threads can be a very tricky tasks. Concurrent operations leading to conflicts are very likely to occur if we don't tackle this issue from the source.
+But managing tasks through multiple threads can be very tricky. Concurrent operations leading to conflicts are very likely to occur if we don't tackle this issue from the source.
 
 For example, let's image this situation :
-func1 and func2 are called. Multithreading is available, so their execution is sparced on two separate threads.
-func1 needs to access a value in memory, and updates it in a loop. func2 updates the value during its execution. The value will change while func1 still accesses it in its loop.
-The loop will likely last more or less, causing func1 to behave unexpectedly, or even to stay lock in an infinite loop.
+func1 and func2 are called. Multithreading is available, so their execution is sparsed betwenn two separate threads.
+func1 needs to access a variable in memory, and updates it in a loop. func2 updates the same variable during its execution. The variable will change value while func1 still accesses it in its loop.
+The loop will likely last more or less, causing func1 to behave unexpectedly, or even to stay locked in an infinite loop.
 
-To avoid this behavior, the value must be a very specific type, volatile, to inform the compiler that this value should not be changed across multiple threads. Without it, it will assume it's a variable that is only accessed by the current scope of the execution.
+To avoid this behavior, the variable must be a very specific sub-type, called "volatile", to inform the compiler that this variable should not be changed across multiple threads. Without it, the compiler will always assume ariables to be accessed only throughout the current scope of the execution.
 
 Fortunately, classes are made for that matter. Python is a high level language, able of introspection, which allows specific classes to take care of this issue for us.
 
@@ -195,10 +195,10 @@ ThreadPoolExecutor is one of those classes.
 
 <p><img src="images/pool.png"/></p>
 
-This kind of coding is called concurrent programming. It's the main source of time performance involved in the submission script.
-This programming implies why we often design our functions with the purpose to executing them later, simulteanously and with different argument.
+This kind of coding is called concurrent programming. It's the main source of time performance optimization involved in the submission script.
+This programming implies we design our functions with the purpose of executing them later, simulteanously and with different arguments.
 
-The partial function plays a role, to be able to pass partially parametered functions to multiple threads.
+The partial function also plays a role in this optimization, to be able to pass partially parametered functions to multiple threads.
 Please refer to the explanation of the partial function (section "Subsidiary questions" in the notebook).
 
 
