@@ -1,8 +1,6 @@
 # Winning-DeepFake-Review
 Line-by-line review of the prediction part of the winning submission to the Facebook Kaggle Deep Fake detection competition.
 
-Line by line review of the DeepFake Kaggle competition winner
-
 You can read the Notebook online, with the Jupyter viewer. Direct link : https://nbviewer.jupyter.org/github/WGribaa/Winning-DeepFake-Review/blob/main/DeepFake%20Prediction%20Review.ipynb
 
 ## Table of content
@@ -23,7 +21,8 @@ You can read the Notebook online, with the Jupyter viewer. Direct link : https:/
   * [a. Dropout](#dropout)
   * [b. Average pooling 2D](#avgpool)
   * [c. Inter-cubic and Inter-area interpolations](#interpolations)
-  * [Isotropic face transformation](#isotropic)
+  * [d. Isotropic face resizing](#isotropic)
+  * [e. MultiThreading through ThreadPoolExecutor](#multithread)
 * [5. Other subsidiary considerations](#other)
 * [6. Thanks](#thanks)
 	
@@ -167,13 +166,40 @@ A similar issue also occurs when reducing the size of a picture : which value sh
 
 For shrinking the image size, Inter-area interpolation method will be used, as it seems to be a specific technique for this case. Unfortunately, I couldn't find more inforamations and this matter seems to be worth of a specific study.
 
-### d. Isotropic face transformation <a name="isotropic">
+
+### d. Isotropic face resizing <a name="isotropic">
 	
-As we have to pass rectangularly-edged data (aka tensors) to our efficientnet, and while it is very computationaly greedy, we don't want any waste by feeding empty space, especially when the solution to this issue also helps with other issues.
+Behind this barbaric name, isotropic resizing simply means that a tranformed image keeps the same aspect ratio. 
 
-We want our ovular faces (cropped, thanks to the bounding boxes) to take as much of a rectangle as possible. This obviously induces a change in the proportion of the facial feature. To avoid any facial feature to be more altered than other, we have to make sure that the transformation is equally spared between all area.
+We first calculate the scale to apply to our main image so that it fits inside a rectangle of fixed size, then we apply the resizing with a specific interpolation, detailed in  the section [Inter-cubic and Inter-area interpolations](#interpolations), to preserve the best original aspect.
 
-That is exactly what Isotropic transformation means, and what the author tried to achieve in this work.
+
+### d. MultiThreading through ThreadPoolExecutor <a name="multithread">
+	
+We don't want a single thread of process to occur, while our modern computer are designed to managed multiple ones. The more threads we have, the more tasks the cpu can perform at the same time (if we don't take into account considerations about the intern bus), thus a list of tasks can be completed faster if our program is designed to do so.
+
+<p><img src="images/thread.png"/></p>
+
+But managing tasks through multiple threads can be a very tricky tasks. Concurrent operations leading to conflicts are very likely to occur if we don't tackle this issue from the source.
+
+For example, let's image this situation :
+func1 and func2 are called. Multithreading is available, so their execution is sparced on two separate threads.
+func1 needs to access a value in memory, and updates it in a loop. func2 updates the value during its execution. The value will change while func1 still accesses it in its loop.
+The loop will likely last more or less, causing func1 to behave unexpectedly, or even to stay lock in an infinite loop.
+
+To avoid this behavior, the value must be a very specific type, volatile, to inform the compiler that this value should not be changed across multiple threads. Without it, it will assume it's a variable that is only accessed by the current scope of the execution.
+
+Fortunately, classes are made for that matter. Python is a high level language, able of introspection, which allows specific classes to take care of this issue for us.
+
+ThreadPoolExecutor is one of those classes.
+
+<p><img src="images/pool.png"/></p>
+
+This kind of coding is called concurrent programming. It's the main source of time performance involved in the submission script.
+This programming implies why we often design our functions with the purpose to executing them later, simulteanously and with different argument.
+
+The partial function plays a role, to be able to pass partially parametered functions to multiple threads.
+Please refer to the explanation of the partial function (section "Subsidiary questions" in the notebook).
 
 
 ## 5. Other subsidiary considerations  <a name="other">
