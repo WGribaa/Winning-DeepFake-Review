@@ -54,9 +54,9 @@ I wish I had more time to study it. As an individual worker on this subject, I p
   
 ![Kaggle DeepFake Header](images/kaggle_view.PNG)
 
-Facebook granted to the winners a total of 1 million dollars. The goals was to design an algorightm which is able to detect whether a video is a deepfake.
+Facebook granted to the winners a total of 1 million dollars. The goal was to design an algorithm able to detect whether a video is a deepfake.
 
-Some troubles regarding a winning team who trained on a set of videos expanded by external sources like Youtube and Flickr occured, bu finally Selim Seferbekow won by a quite small margin, compared to the second who actually was a team.
+Some troubles regarding a winning team who trained on a set of videos expanded by external sources like Youtube and Flickr occured, but finally Selim Seferbekow won by a quite small margin, compared to the second who actually was a team.
 
 
 ### b. Links  <a name="links">
@@ -67,7 +67,7 @@ Winning submissions's repository - from Selim Seferbekov : https://github.com/se
 
 ### c. Scoring  <a name="scoring">
 
-The score used for this competition was the log loss (often called cross-entropy loss). It's a metrics that needs to be minimized.
+The score used for this competition was the log loss (often called cross-entropy loss). It's a metric that needs to be minimized.
 
 The log loss is the log of the likelihood function, which is basically the product of the predictions realizing for each observation. For example, it will be 0.9 * 0.3 = 0.27 if the first was correctly predicted with 0.9 confidence, and the second predicted the incorrect output with 0.7 confidence (therefore 0.3 confidence for the actual output). 
 
@@ -85,21 +85,21 @@ By convention, we multiply it by -1 so that a higher (and closer to zero) score 
 A basic convolutional network is not designed with a fixed architecture in mind. This architecture might represent the most important hyperparameter. 
 
 Changing this hyperparameter, which actually is multiple, means scaling through three different dimensions : 
-- width: more parameter per convolution layer, mostly meaning more channels, makes the model more sensible to fine details, without compromising too much on the time perfomance.
-- depth: more layers of convolution (and potentially other treatments) makes the model more able to capture complex features. But it also increase the likelihood of the gradient vanishing, and makes it more time intensive.
-- resolution: more input features obviously means more details and better accuracy, but the quickly gets very prohibitive.
+- width: more parameter per convolution layer, mostly meaning more channels, makes the model more sensible to fine details, without compromising too much on the time performance.
+- depth: more layers of convolution (and potentially other treatments) makes the model more able to capture complex features. But it also increases the likelihood of the gradient vanishing, and makes it more time intensive.
+- resolution: more input features obviously means more details and better accuracy, but the time to compute quickly gets very prohibitive.
 
-Efficient net is a convolution neural network where each of these dimensions has a factor (alpha, beta and gamma) which can be tuned ; its goals is to get the best combination to offer the best accuracy/time compromise to tune the actual parameters. A fourth parameter phi is necessary : the coumpound coefficient which indicate how much computational resources can be put into it.
+Efficient net is a convolution neural network where each of these dimensions has a factor (alpha, beta and gamma) which can be tuned ; its goal is to get the best combination to offer the best accuracy/time compromise to tune the actual parameters. A fourth parameter phi is necessary : the compound coefficient which indicates how much computational resources can be put into it.
 
 <p><img src="images/efficientnet.png"/></p>
 
 To optimize the process of finding an efficient architecture, a mathematical relation between those parameters was found. Hence the EfficientNet.
 
-EfficientNet is the main trained model used here to make the final predictions. It is given the extracted images of faces which were previously cropped and tranformed.
+EfficientNet is the main trained model used here to make the final predictions. It is given the extracted images of faces which were previously cropped and transformed.
 
 ### b. Multi Task Cascaded CNN (Facenet) <a name="facenet">
 
-It is a network that is composed of 3 separate networks : P-Net, R-Net and O-Net. Each of them have a specific task which work towards the goal of the whole network : localizing faces and facial landmarks. 
+It is a network that is composed of 3 separate networks : P-Net, R-Net and O-Net. Each of them have a specific task which works towards the goal of the whole network : localizing faces and facial landmarks. 
 
 All three aim to do three tasks, but at different levels, thus the specificity of each of those sub-networks. Those tasks are face classification, regression of the facial boundaries (as rectangles, called bounding boxes) and facial landmarks (eyes, mouth, nose).
 
@@ -121,17 +121,17 @@ The R-Net is better suited to confidently tell if the face candidates are really
 
 The O-Net describes the face in more details and focuses on tuning the position	of the bounding boxes and landmarks.
 
-A MTCNN is used in this project, in an early stage of face detection. The author chose to not keep the landmatks at all to detect the fakeness of the faces. Instead, he invited us to keep the bounding boxes as cropped images from the original frames, and then feed it (after some transformation) to our EfficientNet.
+A MTCNN is used in this project, in an early stage of face detection. The author chose to not keep the landmarks at all to detect the fakeness of the faces. Instead, he invited us to keep the bounding boxes as cropped images from the original frames, and then feed it (after some transformation) to our EfficientNet.
 
 
 ## 4. Techniques and transformations  <a name="tricks">
 
 ### a. Dropout <a name="dropout">
 	
-Dropout is a technique, very easy to call in Deep Learning libraries, that simply turns off neurones chosen randomly. Those neurons can wake up in the next iteration.
+Dropout is a technique, very easy to call in Deep Learning libraries, that simply turns off neurons chosen randomly. Those neurons can wake up in the next iteration.
 
 
-This technique has only one purpose : to prevent overfitting, especially in fully connected neural networks which can produce very strong inter-dependance among themselves.
+This technique has only one purpose : to prevent overfitting, especially in fully connected neural networks which can produce very strong interdependence among themselves.
 
 <p><img src="images/dropout.png"/></p>
 
@@ -149,45 +149,45 @@ This operation will be used between the EfficientNet and the FullyConnected Laye
 
 <p><img src="images/avgpooling.png"/></p>
 
-The 2D is just the well knows applicaion over a 2 dimensional matrix.
+The "2D" is simply the well known application over a 2-dimensional matrix.
 
 
 ### c. Inter-cubic and Inter-area interpolations <a name="interpolations">
 	
 Interpolation can basically be explained as "guessing which information should be here".
 
-When we resize an image, the number of pixels changes. As an exemple, going from a simple width to its double, we don't want a pixel to spread as four similar ones. We rather want to take into account the neighboring pixels to "guess" what is the intermediary features the new pixels should be have.
+When we resize an image, the number of pixels changes. As an exemple, going from a simple width to its double, we don't want a pixel to spread as four similar ones. We rather want to take into account the neighboring pixels to "guess" what are the intermediary features the new pixels should have.
 
-Inter-cubic, or bicubic, interpolation takes into account 16 neighboring pixel. It is one of the costliest method, but it gives very good results when the goal is to add to the size of the original image, which is the case chere it will be used here. Plus, the cost of this method is kind of negligeable in comparison of other ones in the global Deep Learning process.
+Inter-cubic, or bicubic, interpolation takes into account 16 neighboring pixels. It is one of the costliest methods, but it gives very good results when the goal is to add to the size of the original image, which is the case chere it will be used here. Plus, the cost of this method is kind of negligible in comparison to other ones in the global Deep Learning process.
 
 <p><img src="images/bicubic.png"/></p>
 
-A similar issue also occurs when reducing the size of a picture : which value should the pixel takes when it was previously "more than itself" ?
+A similar issue also occurs when reducing the size of a picture : which values should the pixel take when it was previously representing "more than itself" ?
 
-For shrinking the image size, Inter-area interpolation method will be used, as it seems to be a specific technique for this case. Unfortunately, I couldn't find more inforamations and this matter seems to be worth of a specific study.
+For shrinking the image size, Inter-area interpolation method will be used, as it seems to be a specific technique for this case. Unfortunately, I couldn't find more informations and this matter seems to be worth of a specific study.
 
 
 ### d. Isotropic face resizing <a name="isotropic">
 	
-Behind this barbaric name, isotropic resizing simply means that a tranformed image keeps the same aspect ratio. 
+Behind this barbaric name, isotropic resizing simply means that a transformed image keeps the same aspect ratio. 
 
 We first calculate the scale to apply to our main image so that it fits inside a rectangle of fixed size, then we apply the resizing with a specific interpolation, detailed in  the section [Inter-cubic and Inter-area interpolations](#interpolations), to preserve the best original aspect.
 
 
 ### d. MultiThreading through ThreadPoolExecutor <a name="multithread">
 	
-We don't want a single thread of processes to occur, while our modern computers are designed to managed multiple ones. The more threads we have, the more tasks the cpu can perform at the same time (this claim doesn't take into account the intern bus), thus a list of tasks can be completed faster if our program is designed to take advantage of multithreading.
+We don't want a single thread of processes to occur, while our modern computers are designed to manage multiple ones. The more threads we have, the more tasks the cpu can perform at the same time (this claim doesn't take into account the intern bus), thus a list of tasks can be completed faster if our program is designed to take advantage of multithreading.
 
 <p><img src="images/thread.png"/></p>
 
 But managing tasks through multiple threads can be very tricky. Concurrent operations leading to conflicts are very likely to occur if we don't tackle this issue from the source.
 
 For example, let's image this situation :
-func1 and func2 are called. Multithreading is available, so their execution is sparsed betwenn two separate threads.
+func1 and func2 are called. Multithreading is available, so their execution is distributed to two separate threads.
 func1 needs to access a variable in memory, and updates it in a loop. func2 updates the same variable during its execution. The variable will change value while func1 still accesses it in its loop.
 The loop will likely last more or less, causing func1 to behave unexpectedly, or even to stay locked in an infinite loop.
 
-To avoid this behavior, the variable must be a very specific sub-type, called "volatile", to inform the compiler that this variable should not be changed across multiple threads. Without it, the compiler will always assume ariables to be accessed only throughout the current scope of the execution.
+To avoid this behavior, the variable must be a very specific sub-type, called "volatile", to inform the compiler that this variable should not be changed across multiple threads. Without it, the compiler will always assume variables as to be accessed only throughout the current scope of the execution.
 
 Fortunately, classes are made for that matter. Python is a high level language, able of introspection, which allows specific classes to take care of this issue for us.
 
@@ -196,15 +196,15 @@ ThreadPoolExecutor is one of those classes.
 <p><img src="images/pool.png"/></p>
 
 This kind of coding is called concurrent programming. It's the main source of time performance optimization involved in the submission script.
-This programming implies we design our functions with the purpose of executing them later, simulteanously and with different arguments.
+This programming implies we design our functions with the purpose of executing them later, simultaneously and with different arguments.
 
-The partial function also plays a role in this optimization, to be able to pass partially parametered functions to multiple threads.
+The partial function also plays a role in this optimization, to be able to pass partially parameterized functions to multiple threads.
 Please refer to the explanation of the partial function (section "Subsidiary questions" in the notebook).
 
 
 ## 5. Other subsidiary considerations  <a name="other">
 
-You will find at the end of this notebook some other explanation, either on other concepts (like the very useful partial), either on choices made. I chose to put them in the notebook because their implementations greatly improve their explanability, and I couldn't choose to implement them in this readme.
+You will find at the end of this notebook some other explanation, either on other concepts (like the very useful partial), either on choices made. I chose to put them in the notebook because their implementations greatly improve their explainability, and I couldn't choose to implement them in this readme.
 
     a. What does partial do ?
     b. Numpy linspace
@@ -217,7 +217,7 @@ You will find at the end of this notebook some other explanation, either on othe
 
 ## 6. Thanks  <a name="thanks">
 
-Thanks to my Deep Learning teacher, Benjamin Dubreu, whom I profoundly respect for his work and the importance he gave to this exercice in our training.
+Thanks to my Deep Learning teacher, Benjamin Dubreu, whom I profoundly respect for his work and the importance he gave to this exercise in our training.
 
 It was more than a simple study of lines of codes, it was a deep dive inside the head and thinking process of their designer. This is an incredible way of learning.
 
